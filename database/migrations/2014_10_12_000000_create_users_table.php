@@ -24,6 +24,8 @@ class CreateUsersTable extends Migration
             $table->enum('status', User::getValidStatus());
             $table->timestamps();
         });
+
+        //some data that should appear only on the feature of registering new user
     }
 
     /**
