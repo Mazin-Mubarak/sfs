@@ -20,8 +20,9 @@ class CreateUsersTable extends Migration
             $table->string('user_name')->unique();
             $table->string('password');
             $table->rememberToken();
-            $table->date('birth_date')->nullable();
+            $table->date('birth_date');
             $table->enum('status', User::getValidStatus());
+            $table->string('image')->nullable();
             $table->timestamps();
         });
 

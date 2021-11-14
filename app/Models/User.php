@@ -19,8 +19,14 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'email',
+        'user_name',
         'password',
+        'birth_date',
+    ];
+
+    //the attributes that are'nt mass assignable
+    protected $guarded = [
+        'status'
     ];
 
     /**
@@ -40,6 +46,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'birth_date' => 'datetime',
     ];
 
     /**

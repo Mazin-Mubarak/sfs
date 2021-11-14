@@ -15,4 +15,5 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::middleware('auth:sanctum')->group( function () {});
+// get all (require) endpoint for user API from ./user/api.php file
+require __DIR__.DIRECTORY_SEPARATOR."users".DIRECTORY_SEPARATOR."api.php";
