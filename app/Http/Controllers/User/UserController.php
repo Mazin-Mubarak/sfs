@@ -7,6 +7,7 @@ use App\Http\Requests\User\storeUserRequest;
 use App\Services\Users\UserService;
 use Carbon\Carbon;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\App;
 
 class UserController extends Controller
 {
@@ -18,9 +19,8 @@ class UserController extends Controller
         $birthDate = Carbon::create($request->input('birth_date'));
 
         $user = UserService::create($name, $userName, $password, $birthDate);
-
         return $this->sendSuccessResponse(
-            ["user has been created successfully"],
+            [__("users.addition_success", ["user_name" => $user->user_name])],
             $user,
             Response::HTTP_CREATED
         );
