@@ -22,6 +22,7 @@ class User extends Authenticatable
         'user_name',
         'password',
         'birth_date',
+        'image'
     ];
 
     //the attributes that are'nt mass assignable

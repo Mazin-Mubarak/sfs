@@ -20,7 +20,7 @@ class UserService
      * 
      * @return User the model of the new created user
      */
-    public static function create(string $name, string $userName, string $password, DateTime $birthDate): User
+    public static function create(string $name, string $userName, string $password, DateTime $birthDate,$avatarFileName = null): User
     {
         //trim and str_lower the userName
         // mb_strtolower for supporting multi byte strings
@@ -34,6 +34,7 @@ class UserService
             'user_name' => $userName,
             'password' => $hashedPassword,
             'birth_date' => $birthDate,
+            'image' => $avatarFileName
         ];
 
         // the new user

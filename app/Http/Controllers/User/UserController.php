@@ -23,8 +23,26 @@ class UserController extends Controller
         $password = $request->input('password');
         $birthDate = Carbon::create($request->input('birth_date'));
         
+        $userAvatarFileName = null;
+        if($request->hasFile('image')){
+            $userAvatar = $request->file('image');
 
-        $user = UserService::create($name, $userName, $password, $birthDate);
+            // name consist from unique random string + . + image extension
+            $uniqueImageName = uniqid("",true);
+            $imageExtension = $userAvatar->extension();
+
+            $userAvatarFileName = $uniqueImageName . '.' . $imageExtension ;
+
+
+            //get the user images directory
+            $userImagesDirectory =  config('users.images_directory');
+
+            //store the image persistently
+            $userAvatar->storeAs($userImagesDirectory, $userAvatarFileName);
+
+        }
+
+        $user = UserService::create($name, $userName, $password, $birthDate, $userAvatarFileName);
         return $this->sendSuccessResponse(
             [__("users.addition_success", ["user_name" => $user->user_name])],
             $user,
