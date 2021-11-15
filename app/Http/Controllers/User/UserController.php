@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Exceptions\User\UserNotFoundException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\LoginUserRequest;
+use App\Http\Requests\User\LogoutUserRequest;
 use App\Http\Requests\User\storeUserRequest;
 use App\Services\Users\UserService;
 use Carbon\Carbon;
-use Exception;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\App;
+use Throwable;
 
 class UserController extends Controller
 {
@@ -23,6 +22,7 @@ class UserController extends Controller
         $userName = mb_strtolower($request->input('user_name'));
         $password = $request->input('password');
         $birthDate = Carbon::create($request->input('birth_date'));
+        
 
         $user = UserService::create($name, $userName, $password, $birthDate);
         return $this->sendSuccessResponse(
@@ -46,10 +46,48 @@ class UserController extends Controller
         $userAgent = $request->header('USER-AGENT');
         try{
             $loginData = UserService::login($userName, $password, $ip, $userAgent);
-        }catch(Exception $e){
+        }catch(Throwable $e){
             return $this->sendErrorResponse([$e->getMessage()], null, Response::HTTP_UNAUTHORIZED);
         }
 
         return $this->sendSuccessResponse([__("users.login_successful")], $loginData);
+    }
+
+    
+    /**
+     * Revoke access tokens for the current user
+     */
+    public function logout(LogoutUserRequest $request)
+    {
+        $device = "current";
+        if($request->has('device')){
+            $device = strtolower(trim($request->input('device')));
+        }
+ 
+        //get the authenticated users
+        $user = auth()->user();
+        $tokensToRevoke = $user->currentAccessToken();
+
+        switch ($device) {
+            case 'all':
+                $tokensToRevoke = $user->tokens();
+                break;
+
+            case 'others':
+                $currentAccessTokenId = $user->currentAccessToken()->id;
+                $tokensToRevoke = $user->tokens()->where("id", "!=" , $currentAccessTokenId);    
+                break;
+
+            case 'current':            
+            default:
+                //logout from current used device
+                $tokensToRevoke = $user->currentAccessToken();
+                break;
+        }
+
+        //revoke tokens
+        UserService::logout($tokensToRevoke);
+
+        return $this->sendSuccessResponse([__("users.logout_successful")], $user);
     }
 }

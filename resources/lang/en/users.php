@@ -5,5 +5,6 @@ return [
     "user_not_found" => "user (:user_name) not found",
     "wrong_password" => "the password for user (:user_name) is wrong",
     "login_successful" => "login successful",
-    "inactive_user" => "This user is inactive please communicate with customer support"
+    "inactive_user" => "This user is inactive please communicate with customer support",
+    "logout_successful" => "Logout Successful"
 ];

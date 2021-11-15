@@ -103,4 +103,13 @@ class UserService
             "user" => $user
         ];
     }
+
+    /**
+     * logout user (revoke access tokens)
+     * @param Collection tokens : the tokens to be revoked
+     */
+    public static function logout($tokens)
+    {
+        $tokens->delete();
+    }
 }
