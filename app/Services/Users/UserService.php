@@ -2,6 +2,7 @@
 
 namespace App\Services\Users;
 
+use App\Exceptions\User\InActiveUserException;
 use App\Exceptions\User\UserNotFoundException;
 use App\Exceptions\User\UserWrongPasswordException;
 use App\Models\User;
@@ -55,6 +56,7 @@ class UserService
      * 
      * @throws UserNotFoundException if the given userName is not found in the database
      * @throws UserWrongPasswordException if the given password does not match the password in the database
+     * @throws InActiveUserException if the user status in any status rather than active
      */
     public static function login(string $userName, string $password, string $ip = '', string $userAgent = '', array $tokenAbilities = ['*']): array
     {
@@ -75,6 +77,11 @@ class UserService
 
         if(!$passwordsMatched){
             throw new UserWrongPasswordException(__("users.wrong_password", ['user_name' => $userName]));
+        }
+
+        //prevent inactive users from creating access tokens
+        if($user->status !== User::STATUS_ACTIVE){
+            throw new InActiveUserException(__("users.inactive_user"));
         }
 
         //set the device data
