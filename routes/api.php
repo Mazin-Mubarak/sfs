@@ -17,3 +17,4 @@ use Illuminate\Support\Facades\Route;
 
 // get all (require) endpoint for user API from ./user/api.php file
 require __DIR__.DIRECTORY_SEPARATOR."users".DIRECTORY_SEPARATOR."api.php";
+require __DIR__.DIRECTORY_SEPARATOR."educationalInstitutions".DIRECTORY_SEPARATOR."api.php";

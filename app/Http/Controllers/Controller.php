@@ -21,7 +21,7 @@ class Controller extends BaseController
      * 
      * @return ResponseFactory
      */
-    public function sendSuccessResponse(array $messages,$data, int $responseCode = 200, array $headers = [])
+    public static function sendSuccessResponse(array $messages,$data, int $responseCode = 200, array $headers = [])
     {
         $response = [
             "hasError" => false,
@@ -40,7 +40,7 @@ class Controller extends BaseController
      * 
      * @return ResponseFactory
      */
-    public function sendErrorResponse(array $messages, $data = [], int $responseCode = 200, array $headers = [] )
+    public static function sendErrorResponse(array $messages, $data = [], int $responseCode = 200, array $headers = [] )
     {
         $response = [
             "hasError" => true,

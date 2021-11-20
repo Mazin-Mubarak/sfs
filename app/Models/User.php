@@ -77,4 +77,12 @@ class User extends Authenticatable
         //return status
         return $validStatuses;
     }
+
+    /**
+     * to define that one user has many educational institutions
+     */
+    public function educational_institutions()
+    {
+        return $this->hasMany(EducationalInstitution::class);
+    }
 }
