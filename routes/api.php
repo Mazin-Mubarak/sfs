@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PhoneNumberController;
 use App\Http\Controllers\UsersController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -18,3 +19,5 @@ use Illuminate\Support\Facades\Route;
 // get all (require) endpoint for user API from ./user/api.php file
 require __DIR__.DIRECTORY_SEPARATOR."users".DIRECTORY_SEPARATOR."api.php";
 require __DIR__.DIRECTORY_SEPARATOR."educationalInstitutions".DIRECTORY_SEPARATOR."api.php";
+
+Route::post('phones/{id}/verify', [PhoneNumberController::class, 'verify']);
