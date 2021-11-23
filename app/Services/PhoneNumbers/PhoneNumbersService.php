@@ -83,7 +83,10 @@ class PhoneNumbersService
 
         $phone = PhoneNumber::create($data);
         return [
-            'otp' => $otp,
+            'secretToPhone' => [
+                'otp' => $otp,
+                'link' => route('phone.verify.token', ['id' => $phone->id, 'token' => $verificationToken])
+            ],
             'phone' => $phone
         ];
     }

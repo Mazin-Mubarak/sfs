@@ -20,4 +20,5 @@ use Illuminate\Support\Facades\Route;
 require __DIR__.DIRECTORY_SEPARATOR."users".DIRECTORY_SEPARATOR."api.php";
 require __DIR__.DIRECTORY_SEPARATOR."educationalInstitutions".DIRECTORY_SEPARATOR."api.php";
 
-Route::post('phones/{id}/verify', [PhoneNumberController::class, 'verify']);
+Route::post('phones/{id}/verify', [PhoneNumberController::class, 'verify'])->name('phone.verify.otp');
+Route::get('phones/{id}/verify/{token}', [PhoneNumberController::class, 'verifyByToken'])->name('phone.verify.token');
