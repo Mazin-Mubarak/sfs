@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests\EducationalInstitution;
+namespace App\Http\Requests\User;
 
 use App\Models\PhoneNumber;
 use Illuminate\Foundation\Http\FormRequest;
 
-class AddPhonesRequest extends FormRequest
+class AddUserPhoneRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,11 +14,7 @@ class AddPhonesRequest extends FormRequest
      */
     public function authorize()
     {
-        /** the user can add phone number if
-         * # he created the institution
-         * # he is an supervisor in the institution
-        */
-        //TODO : set the authorization rules
+        //user always is allowed to add new phone number
         return true;
     }
 

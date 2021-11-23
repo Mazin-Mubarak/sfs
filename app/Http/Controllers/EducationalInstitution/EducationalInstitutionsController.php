@@ -4,10 +4,9 @@ namespace App\Http\Controllers\EducationalInstitution;
 
 use App\Exceptions\PhoneNumber\PhoneDuplicationException;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\EducationalInstitution\AddPhonesRequest;
+use App\Http\Requests\EducationalInstitution\AddInstitutionPhoneRequest;
 use App\Http\Requests\EducationalInstitution\CreateInstitutionRequest;
 use App\Models\EducationalInstitution;
-use App\Models\PhoneNumber;
 use App\Services\Institutions\InstitutionService;
 use App\Services\PhoneNumbers\PhoneNumbersService;
 use Illuminate\Http\Response;
@@ -47,7 +46,7 @@ class EducationalInstitutionsController extends Controller
     /**
      * Add phone numbers for the institution
      */
-    public function addPhones(AddPhonesRequest $request, int $id)
+    public function addPhones(AddInstitutionPhoneRequest $request, int $id)
     {
         //get the institution
         $institution = EducationalInstitution::find($id);
@@ -71,6 +70,6 @@ class EducationalInstitutionsController extends Controller
             return $this->sendErrorResponse($messages, null, Response::HTTP_NOT_ACCEPTABLE);
         }
 
-        return $this->sendSuccessResponse([] ,$verificationData, Response::HTTP_CREATED);
+        return $this->sendSuccessResponse([__("institutions.add_phone_success")] ,$verificationData, Response::HTTP_CREATED);
     }
 }

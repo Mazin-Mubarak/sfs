@@ -99,6 +99,7 @@ class PhoneNumbersService
      * 
      * @param string note notes about the phone number
      * 
+     * 
      * @throws PhoneDuplicationException if the given number is duplicated for the same user
      */
     public static function addInstitutionPhoneNumber(string $number, int $institutionId, string $note = null)
@@ -106,5 +107,25 @@ class PhoneNumbersService
         $type = PhoneNumber::TYPE_OFFICE;
         $associatedTo = PhoneNumber::ASSOC_INSTITUTION;
         return static::addPhoneNumber($number, $institutionId, $type, $associatedTo, $note);
+    }
+
+    /**
+     * Add new phone number for the user and store it in the database
+     * @param string number the phone number
+     * @param int userId the user id
+     * @param string type  the type of the phone number
+     * 
+     * @param string note notes about the phone number
+     * 
+     * @throws InvalidPhoneTypeException if the given type is invalid
+     * @throws PhoneDuplicationException if the given number is duplicated for the same user
+     */
+    public static function addUserPhoneNumber(string $number, int $userId, string $type = null, string $note = null)
+    {
+        if(!$type){
+            $type = PhoneNumber::TYPE_PERSONAL;
+        }
+        $associatedTo = PhoneNumber::ASSOC_USER;
+        return static::addPhoneNumber($number, $userId, $type, $associatedTo, $note);
     }
 }

@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Exceptions\PhoneNumber\PhoneDuplicationException;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\User\AddUserPhoneRequest;
 use App\Http\Requests\User\LoginUserRequest;
 use App\Http\Requests\User\LogoutUserRequest;
 use App\Http\Requests\User\storeUserRequest;
+use App\Models\PhoneNumber;
+use App\Services\PhoneNumbers\PhoneNumbersService;
 use App\Services\Users\UserService;
 use Carbon\Carbon;
 use Illuminate\Http\Response;
@@ -22,16 +26,16 @@ class UserController extends Controller
         $userName = mb_strtolower($request->input('user_name'));
         $password = $request->input('password');
         $birthDate = Carbon::create($request->input('birth_date'));
-        
+
         $userAvatarFileName = null;
-        if($request->hasFile('image')){
+        if ($request->hasFile('image')) {
             $userAvatar = $request->file('image');
 
             // name consist from unique random string + . + image extension
-            $uniqueImageName = uniqid("",true);
+            $uniqueImageName = uniqid("", true);
             $imageExtension = $userAvatar->extension();
 
-            $userAvatarFileName = $uniqueImageName . '.' . $imageExtension ;
+            $userAvatarFileName = $uniqueImageName . '.' . $imageExtension;
 
 
             //get the user images directory
@@ -39,7 +43,6 @@ class UserController extends Controller
 
             //store the image persistently
             $userAvatar->storeAs($userImagesDirectory, $userAvatarFileName);
-
         }
 
         $user = UserService::create($name, $userName, $password, $birthDate, $userAvatarFileName);
@@ -56,32 +59,32 @@ class UserController extends Controller
 
     public function login(LoginUserRequest $request)
     {
-        
+
         $userName = $request->input('user_name');
         $password = $request->input('password');
 
         $ip = $request->server('REMOTE_ADDR');
         $userAgent = $request->header('USER-AGENT');
-        try{
+        try {
             $loginData = UserService::login($userName, $password, $ip, $userAgent);
-        }catch(Throwable $e){
+        } catch (Throwable $e) {
             return $this->sendErrorResponse([$e->getMessage()], null, Response::HTTP_UNAUTHORIZED);
         }
 
         return $this->sendSuccessResponse([__("users.login_successful")], $loginData);
     }
 
-    
+
     /**
      * Revoke access tokens for the current user
      */
     public function logout(LogoutUserRequest $request)
     {
         $device = "current";
-        if($request->has('device')){
+        if ($request->has('device')) {
             $device = strtolower(trim($request->input('device')));
         }
- 
+
         //get the authenticated users
         $user = auth()->user();
         $tokensToRevoke = $user->currentAccessToken();
@@ -93,10 +96,10 @@ class UserController extends Controller
 
             case 'others':
                 $currentAccessTokenId = $user->currentAccessToken()->id;
-                $tokensToRevoke = $user->tokens()->where("id", "!=" , $currentAccessTokenId);    
+                $tokensToRevoke = $user->tokens()->where("id", "!=", $currentAccessTokenId);
                 break;
 
-            case 'current':            
+            case 'current':
             default:
                 //logout from current used device
                 $tokensToRevoke = $user->currentAccessToken();
@@ -107,5 +110,29 @@ class UserController extends Controller
         UserService::logout($tokensToRevoke);
 
         return $this->sendSuccessResponse([__("users.logout_successful")], $user);
+    }
+
+    /**
+     * Creates new phone and store it in the database
+     */
+    public function addPhone(AddUserPhoneRequest $request)
+    {
+        $user = auth()->user();
+
+        $number = $request->input('number');
+        $type = $request->input('type');
+        $note = $request->input('note');
+
+
+        try {
+            $phone = PhoneNumbersService::addUserPhoneNumber($number, $user->id, $type, $note);
+        } catch (PhoneDuplicationException $e) {
+            $messages = [$e->getMessage()];
+            return $this->sendErrorResponse($messages, null, Response::HTTP_NOT_ACCEPTABLE);
+        } catch (\Throwable $th) {
+            $messages = [$th->getMessage()];
+            return $this->sendErrorResponse($messages, null, Response::HTTP_NOT_ACCEPTABLE);
+        }
+        return $this->sendSuccessResponse([__("users.add_phone_success")], $phone, Response::HTTP_CREATED);
     }
 }
