@@ -99,6 +99,7 @@ class PhoneNumbersService
      * 
      * @param string note notes about the phone number
      * 
+     * @throws PhoneDuplicationException if the given number is duplicated for the same user
      */
     public static function addInstitutionPhoneNumber(string $number, int $institutionId, string $note = null)
     {

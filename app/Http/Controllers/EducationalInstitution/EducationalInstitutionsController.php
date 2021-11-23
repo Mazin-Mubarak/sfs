@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\EducationalInstitution;
 
+use App\Exceptions\PhoneNumber\PhoneDuplicationException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EducationalInstitution\AddPhonesRequest;
 use App\Http\Requests\EducationalInstitution\CreateInstitutionRequest;
@@ -60,7 +61,15 @@ class EducationalInstitutionsController extends Controller
         $note = $request->input('note');
 
 
-        $verificationData = PhoneNumbersService::addInstitutionPhoneNumber($number, $institution->id, $note);
+        try {
+            $verificationData = PhoneNumbersService::addInstitutionPhoneNumber($number, $institution->id, $note);
+        }catch (PhoneDuplicationException $e) {
+            $messages = [$e->getMessage()];
+            return $this->sendErrorResponse($messages, null, Response::HTTP_NOT_ACCEPTABLE);
+        }catch (\Throwable $th) {
+            $messages = [$th->getMessage()];
+            return $this->sendErrorResponse($messages, null, Response::HTTP_NOT_ACCEPTABLE);
+        }
 
         return $this->sendSuccessResponse([] ,$verificationData, Response::HTTP_CREATED);
     }
