@@ -27,7 +27,7 @@ class AddUserPhoneRequest extends FormRequest
     {
         $validType = \implode(",",PhoneNumber::getTypes());
         return [
-            'number' => 'required',
+            'number' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
             'type' => "in:$validType",
             'note' => '',
         ];

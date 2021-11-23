@@ -48,7 +48,7 @@ class AddInstitutionPhoneRequest extends FormRequest
     public function rules()
     {
         return [
-            'number' => 'required',
+            'number' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
             'note' => '',
         ];
     }
