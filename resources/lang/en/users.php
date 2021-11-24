@@ -7,6 +7,7 @@ return [
     "login_successful" => "login successful",
     "inactive_user" => "This user is inactive please communicate with customer support",
     "logout_successful" => "Logout Successful",
-    "add_phone_success" => "phone number added successfully"
+    "add_phone_success" => "phone number added successfully",
+    "add_email_success" => "Email has been added successfully"
 
 ];

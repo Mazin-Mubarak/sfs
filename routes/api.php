@@ -1,8 +1,7 @@
 <?php
 
+use App\Http\Controllers\EmailController;
 use App\Http\Controllers\PhoneNumberController;
-use App\Http\Controllers\UsersController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,3 +21,7 @@ require __DIR__.DIRECTORY_SEPARATOR."educationalInstitutions".DIRECTORY_SEPARATO
 
 Route::post('phones/{id}/verify', [PhoneNumberController::class, 'verify'])->name('phone.verify.otp');
 Route::get('phones/{id}/verify/{token}', [PhoneNumberController::class, 'verifyByToken'])->name('phone.verify.token');
+
+
+Route::post('emails/{id}/verify', [EmailController::class, 'verify'])->name('email.verify.otp');
+Route::get('emails/{id}/verify/{token}', [EmailController::class, 'verifyByToken'])->name('email.verify.token');

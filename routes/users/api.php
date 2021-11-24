@@ -14,4 +14,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('users/logout', [UserController::class, 'logout']);
 
     Route::post('users/current/phones', [UserController::class,  'addPhone'])->name('users.add_phone');
+    Route::post('users/current/emails', [UserController::class,  'addEmail'])->name('users.add_email');
 });

@@ -4,11 +4,13 @@ namespace App\Http\Controllers\User;
 
 use App\Exceptions\PhoneNumber\PhoneDuplicationException;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\User\AddUserEmailRequest;
 use App\Http\Requests\User\AddUserPhoneRequest;
 use App\Http\Requests\User\LoginUserRequest;
 use App\Http\Requests\User\LogoutUserRequest;
 use App\Http\Requests\User\storeUserRequest;
 use App\Models\PhoneNumber;
+use App\Services\Emails\EmailsService;
 use App\Services\PhoneNumbers\PhoneNumbersService;
 use App\Services\Users\UserService;
 use Carbon\Carbon;
@@ -134,5 +136,27 @@ class UserController extends Controller
             return $this->sendErrorResponse($messages, null, Response::HTTP_NOT_ACCEPTABLE);
         }
         return $this->sendSuccessResponse([__("users.add_phone_success")], $phone, Response::HTTP_CREATED);
+    }
+
+    /**
+     * Creates new email and store it in the database
+     */
+    public function addEmail(AddUserEmailRequest $request)
+    {
+        
+        $user = auth()->user();
+
+        $email = $request->input('email');
+        $type = $request->input('type');
+        $note = $request->input('note');
+
+
+        try {
+            $email = EmailsService::addUserEmail($email, $user->id, $type, $note);
+        }catch (\Throwable $th) {
+            $messages = [$th->getMessage()];
+            return $this->sendErrorResponse($messages, null, Response::HTTP_NOT_ACCEPTABLE);
+        }
+        return $this->sendSuccessResponse([__("emails.add_email_success")], $email, Response::HTTP_CREATED);
     }
 }
