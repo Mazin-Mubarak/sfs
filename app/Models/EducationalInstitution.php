@@ -20,4 +20,11 @@ class EducationalInstitution extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    ####################### Relationships ####################
+
+    public function employees()
+    {
+        return $this->belongsToMany(User::class, 'institution_employees', 'institution_id', 'user_id');
+    }
 }
