@@ -14,4 +14,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('institutions/{id}/emails', [EmailController::class, 'store'])->name('institution.emails.add');
 
     Route::post('institutions/{id}/employees', [EmployeesController::class, 'store'])->name('institution.employees.add');
+
+    Route::post('institutions/employees/requests/{id}/accept', [EmployeesController::class, 'accept'])->name('institution.employees.requests.accept');
+
 });
