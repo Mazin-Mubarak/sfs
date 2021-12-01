@@ -4,6 +4,7 @@ namespace App\Http\Controllers\EducationalInstitution;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AcceptInstitutionEmploymentRequest;
+use App\Http\Requests\DeclineInstitutionEmploymentRequest;
 use App\Http\Requests\EducationalInstitution\StoreEmployeeRequest;
 use App\Models\EducationalInstitution;
 use App\Models\InstitutionEmployee;
@@ -71,5 +72,20 @@ class EmployeesController extends Controller
         $data = ['status' => InstitutionEmployee::STATUS_APPROVED];
         $employmentRequest->update($data);
         return $this->sendSuccessResponse([__("employmentRequests.approved")], $employmentRequest);
+    }
+
+    /**
+     *  Decline a request for joining the institution as employee
+     */
+    public function decline(DeclineInstitutionEmploymentRequest $httpRequest ,int $id)
+    {
+        $employmentRequest = InstitutionEmployee::find($id);
+        if(!$employmentRequest){
+            $messages = [__("employmentRequests.not_found")];
+            return $this->sendErrorResponse($messages, null, Response::HTTP_NOT_FOUND);
+        }
+
+        $employmentRequest->delete();
+        return $this->sendSuccessResponse([__("employmentRequests.declined")], $employmentRequest);
     }
 }
